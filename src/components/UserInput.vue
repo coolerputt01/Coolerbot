@@ -29,7 +29,7 @@ export default {
         async sendMessage() {
             if (this.prompt.trim() === "") return;
 
-            this.$emit("send-message", this.prompt); // Emit message to parent
+            this.$emit("send-message", {text:this.prompt,sender:'user'}); // Emit message to parent
             const userInput = this.prompt; // Store the input before clearing
             this.prompt = ""; // Clear input field after sending
 
@@ -48,10 +48,10 @@ export default {
                     response.data.candidates?.[0]?.content?.parts?.[0]?.text ||
                     "I couldn't process that.";
 
-                this.$emit("send-message", { sender: "ai", text: aiResponse });
+                this.$emit("send-message",{text:aiResponse , sender : 'ai'});
             } catch (error) {
                 console.error("Gemini API Error:", error);
-                this.$emit("send-message", { sender: "ai", text: "Oops! Something went wrong." });
+                this.$emit("send-message", {text:"I'm having trouble understanding that.",sender:'ai'});
             }
         },
     },
@@ -114,7 +114,7 @@ i {
     background-color: #586d85;
     border-radius: 14px;
     margin: 0.5em;
-    -webkit-text-stroke: 2px #1f2730 !important;
+    -webkit-text-stroke: 2px #fff !important;
     cursor: pointer; /* Makes it clickable */
 }
 </style>

@@ -1,20 +1,10 @@
 <template>
     <div class="chat-window">
-        <div class="user-message-container">
-            <UserMessage
-                v-for="(msg, index) in messages"
-                v-if="msg.sender === 'user'"
-                :key="'user-' + index"
-                class="message user"
-                :usermessage="msg.text"
-            />
-            <AiMessage
-                v-for="(msg, index) in messages"
-                v-if="msg.sender === 'ai'"
-                :key="'ai-' + index"
-                class="message ai"
-                :usermessage="msg.text"
-            />
+        <div class="message-container">
+            <template v-for="(msg, index) in messages" :key="index">
+                <UserMessage v-if="msg.sender === 'user'" :usermessage="msg.text" />
+                <AiMessage v-else-if="msg.sender === 'ai'" :aimessage="msg.text" />
+            </template>
         </div>
     </div>
 </template>
@@ -26,21 +16,46 @@ import AiMessage from './AiMessage.vue';
 export default {
     name: "ChatWindow",
     props: {
-        messages: Array
+        messages: Array // Unified array of all messages
     },
     components: {
         UserMessage,
-        AiMessage,
+        AiMessage
     }
 };
 </script>
 
 <style scoped>
+/* Customize scrollbar */
 .chat-window {
     flex: 1;
     padding: 10px;
     overflow-y: auto;
     margin-top: 5em;
     margin-bottom: 5em;
+    
+    /* Scrollbar Styling */
+    scrollbar-width: thin; /* For Firefox */
+    scrollbar-color: #00FF9C #1f2730; /* Scroll thumb and track */
+}
+
+/* Webkit-based browsers (Chrome, Edge, Safari) */
+.chat-window::-webkit-scrollbar {
+    width: 8px; /* Thin scrollbar */
+}
+
+.chat-window::-webkit-scrollbar-thumb {
+    background-color: #00FF9C; /* Neon green thumb */
+    border-radius: 10px; /* Rounded edges */
+    transition: background 0.3s;
+}
+
+.chat-window::-webkit-scrollbar-thumb:hover {
+    background-color: #00cc7a; /* Slightly darker green on hover */
+}
+
+.chat-window::-webkit-scrollbar-track {
+    background-color: #1f2730; /* Dark background */
+    border-radius: 10px;
 }
 </style>

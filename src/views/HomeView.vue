@@ -1,7 +1,7 @@
 <template>
     <div class="home-view">
         <NavBar />
-        <ChatWindow :messages="messages" />
+        <ChatWindow :messages="messages"/>
         <UserInput @send-message="handleSendMessage" />
     </div>
 </template>
@@ -9,7 +9,7 @@
 <script>
 import NavBar from '@/components/NavBar.vue'
 import UserInput from '@/components/UserInput.vue'
-import ChatWindow from '@/components/ChatWindow.vue' // New component for chat messages
+import ChatWindow from '@/components/ChatWindow.vue'
 
 export default {
     name: 'HomeView',
@@ -20,14 +20,16 @@ export default {
     },
     data() {
         return {
-            messages: [] // Array to store chat messages
+            messages: [] // Stores all messages in order
         };
     },
     methods: {
-        handleSendMessage(userMessage) {
-            if (userMessage.trim() !== "") {
-                this.messages.push({ text: userMessage, sender: "user" }); // Append user message
-            }
+        handleSendMessage(message) {
+            if (!message || typeof message.text !== "string" || message.text.trim() === "") return;
+
+            this.messages.push({ text: message.text, sender: message.sender });
+
+            console.log("Messages:", this.messages);
         }
     }
 };
