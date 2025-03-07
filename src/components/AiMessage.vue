@@ -1,19 +1,19 @@
 <template>
     <div class="message-container">
-        <div class="user-message">{{ usermessage }}</div>
         <img 
-            src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQanlasPgQjfGGU6anray6qKVVH-ZlTqmuTHw&s" 
-            alt="User" 
-            class="user-message-image"
+            src="https://i.ibb.co/DD1S8jN9/Cooler-bot-icon-small.png" 
+            alt="AI Avatar" 
+            class="ai-message-image"
         >
+        <div class="ai-message">{{ aimessage }}</div>
     </div>
 </template>
 
 <script>
 export default {
-    name: "UserMessage",
+    name: "AiMessage",
     props: {
-        usermessage: {
+        aimessage: {
             type: String,
             required: true
         }
@@ -34,19 +34,19 @@ export default {
 /* Message Container */
 .message-container {
     display: flex;
-    align-items: flex-end; /* Aligns text with image */
-    justify-content: flex-end;
+    align-items: flex-start; /* Align text with image */
+    justify-content: flex-start;
     gap: 8px; /* Space between message and image */
     margin: 0.5em;
     max-width: 80%;
 }
 
-/* Message Bubble */
-.user-message {
-    background-color: #00FF9C;
+/* AI Message Bubble */
+.ai-message {
+    background-color: #E5E5EA;
     color: #000 !important;
     padding: 10px 15px;
-    border-radius: 15px 15px 0px 15px; /* Rounded bubble with a tail effect */
+    border-radius: 15px 15px 15px 0px; /* Adjusted to match AI-style message bubbles */
     text-align: left;
     max-width: 70%;
     word-wrap: break-word;
@@ -55,8 +55,8 @@ export default {
     box-shadow: 2px 2px 8px rgba(0, 0, 0, 0.1);
 }
 
-/* User Image */
-.user-message-image {
+/* AI Avatar Image */
+.ai-message-image {
     width: 35px;
     height: 35px;
     border-radius: 50%;

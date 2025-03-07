@@ -1,7 +1,13 @@
 <template>
     <div class="user-input">
         <div class="just-a-container">
-            <input type="text" v-model="prompt" placeholder="Enter a prompt here..." class="prompt" @keyup.enter="sendMessage"/>
+            <input
+                type="text"
+                v-model="prompt"
+                placeholder="Enter a prompt here..."
+                class="prompt"
+                @keyup.enter="sendMessage"
+            />
             <i class="fa-solid fa-microphone"></i>
         </div>
         <i class="fa-solid fa-paper-plane" @click="sendMessage"></i>
@@ -9,21 +15,46 @@
 </template>
 
 <script>
+import axios from "axios";
+
 export default {
-    name: 'UserInput',
+    name: "UserInput",
     data() {
         return {
-            prompt: "" // Stores user input
+            prompt: "", // Stores user input
+            apikey: "AIzaSyCc1jMTqqagg4NfwNIEylN-LlxDjSg1cmA",
         };
     },
     methods: {
-        sendMessage() {
-            if (this.prompt.trim() !== "") {
-                this.$emit("send-message", this.prompt); // Emit message to parent
-                this.prompt = ""; // Clear input field after sending
+        async sendMessage() {
+            if (this.prompt.trim() === "") return;
+
+            this.$emit("send-message", this.prompt); // Emit message to parent
+            const userInput = this.prompt; // Store the input before clearing
+            this.prompt = ""; // Clear input field after sending
+
+            try {
+                const response = await axios.post(
+                    "https://generativelanguage.googleapis.com/v1beta3/models/gemini-pro:generateContent",
+                    {
+                        contents: [{ parts: [{ text: userInput }] }],
+                    },
+                    {
+                        params: { key: this.apikey },
+                    }
+                );
+
+                const aiResponse =
+                    response.data.candidates?.[0]?.content?.parts?.[0]?.text ||
+                    "I couldn't process that.";
+
+                this.$emit("send-message", { sender: "ai", text: aiResponse });
+            } catch (error) {
+                console.error("Gemini API Error:", error);
+                this.$emit("send-message", { sender: "ai", text: "Oops! Something went wrong." });
             }
-        }
-    }
+        },
+    },
 };
 </script>
 

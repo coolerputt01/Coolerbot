@@ -1,2 +1,124 @@
 <a href="https://imgbb.com/"><img src="" alt="Cooler_bot_icon_small" border="0"></a>
      <img src="https://i.ibb.co/DD1S8jN9/Cooler-bot-icon-small.png" alt="CoolerBot Logo Large High Resolution" class="nav-head-img">
+
+
+     <template>
+    <div class="chat-window">
+        <div class="user-message-container">
+            <!-- Render User Messages -->
+            <UserMessage 
+                v-for="(msg, index) in messages.filter(m => m.sender === 'user')" 
+                :key="index" 
+                :usermessage="msg.text"
+            />
+
+            <!-- Render AI Messages -->
+            <AiMessage 
+                v-for="(msg, index) in messages.filter(m => m.sender === 'ai')" 
+                :key="index" 
+                :aimessage="msg.text"
+            />
+        </div>
+
+        <!-- Input & Send Button -->
+        <div class="input-container">
+            <input v-model="newMessage" type="text" placeholder="Type a message..." @keyup.enter="sendMessage" />
+            <button @click="sendMessage">Send</button>
+        </div>
+    </div>
+</template>
+
+<script>
+import UserMessage from './UserMessage.vue';
+import AiMessage from './AiMessage.vue';
+import axios from 'axios';
+
+export default {
+    name: "ChatWindow",
+    components: {
+        UserMessage,
+        AiMessage,
+    },
+    data() {
+        return {
+            messages: [],  // Stores both user and AI messages
+            newMessage: "", // User input message
+            apiKey: "AIzaSyCc1jMTqqagg4NfwNIEylN-LlxDjSg1cmA", // Replace with your API key
+        };
+    },
+    methods: {
+        async sendMessage() {
+            if (!this.newMessage.trim()) return;
+
+            // Add User Message to Chat
+            this.messages.push({ text: this.newMessage, sender: "user" });
+
+            // Store user input before sending
+            const userMessage = this.newMessage;
+            this.newMessage = ""; // Clear input field
+
+            try {
+                // Send message to Gemini API
+                const aiResponse = await this.getAiResponse(userMessage);
+                
+                // Add AI response to Chat
+                this.messages.push({ text: aiResponse, sender: "ai" });
+            } catch (error) {
+                console.error("Error fetching AI response:", error);
+            }
+        },
+
+        async getAiResponse(userMessage) {
+            try {
+                const response = await axios.post(
+                    "https://generativelanguage.googleapis.com/v1beta3/models/gemini-pro:generateContent",
+                    {
+                        contents: [{ parts: [{ text: userMessage }] }]
+                    },
+                    {
+                        params: { key: this.apiKey }
+                    }
+                );
+
+                // Extract AI-generated text
+                return response.data.candidates[0]?.content?.parts[0]?.text || "I couldn't process that.";
+            } catch (error) {
+                console.error("Gemini API Error:", error);
+                return "Oops! Something went wrong.";
+            }
+        }
+    }
+};
+</script>
+
+<style scoped>
+.chat-window {
+    flex: 1;
+    padding: 10px;
+    overflow-y: auto;
+    margin-top: 5em;
+    margin-bottom: 5em;
+}
+
+/* Input Box & Send Button */
+.input-container {
+    display: flex;
+    gap: 8px;
+    margin-top: 10px;
+}
+
+.input-container input {
+    flex: 1;
+    padding: 10px;
+    border-radius: 5px;
+    border: 1px solid #ccc;
+}
+
+.input-container button {
+    padding: 10px;
+    background-color: #00FF9C;
+    color: black;
+    border: none;
+    cursor: pointer;
+}
+</style>
