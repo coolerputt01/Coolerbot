@@ -8,7 +8,6 @@
                 class="prompt"
                 @keyup.enter="sendMessage"
             />
-            <i class="fa-solid fa-microphone"></i>
         </div>
         <i class="fa-solid fa-paper-plane" @click="sendMessage"></i>
     </div>

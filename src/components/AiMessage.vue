@@ -5,17 +5,48 @@
             alt="AI Avatar" 
             class="ai-message-image"
         >
-        <div class="ai-message">{{ aimessage }}</div>
+        <div class="ai-message">
+            <span ref="typedElement"></span>
+        </div>
     </div>
 </template>
 
 <script>
+import Typed from "typed.js";
+
 export default {
     name: "AiMessage",
     props: {
         aimessage: {
             type: String,
             required: true
+        }
+    },
+    mounted() {
+        this.startTyping();
+    },
+    methods: {
+        startTyping() {
+            this.typed = new Typed(this.$refs.typedElement, {
+                strings: [this.aimessage],
+                typeSpeed: 10,
+                showCursor: true,
+                cursorChar: "|",
+                loop: false,
+                onComplete: () => {
+                    setTimeout(() => {
+                        if (this.$refs.typedElement) {
+                            const cursor = this.$refs.typedElement.parentElement.querySelector(".typed-cursor");
+                            if (cursor) cursor.style.display = "none"; // Hide cursor safely
+                        }
+                    }, 500); // Give it a small delay
+                }
+            });
+        }
+    },
+    beforeUnmount() {
+        if (this.typed) {
+            this.typed.destroy();
         }
     }
 };
@@ -34,25 +65,21 @@ export default {
 /* Message Container */
 .message-container {
     display: flex;
-    align-items: flex-start; /* Align text with image */
-    justify-content: flex-start;
-    gap: 8px; /* Space between message and image */
+    align-items: flex-start;
+    gap: 8px;
     margin: 0.5em;
     max-width: 80%;
 }
 
-/* AI Message Bubble */
+/* AI Message */
 .ai-message {
-    background-color: #E5E5EA;
-    color: #000 !important;
+    color: #fff !important;
     padding: 10px 15px;
-    border-radius: 15px 15px 15px 0px; /* Adjusted to match AI-style message bubbles */
-    text-align: left;
-    max-width: 70%;
+    border-radius: 15px 15px 15px 0px;
+    max-width: 90%;
     word-wrap: break-word;
     font-size: 14px;
     line-height: 1.4;
-    box-shadow: 2px 2px 8px rgba(0, 0, 0, 0.1);
 }
 
 /* AI Avatar Image */
@@ -61,6 +88,6 @@ export default {
     height: 35px;
     border-radius: 50%;
     object-fit: cover;
-    flex-shrink: 0; /* Prevents image from shrinking */
+    flex-shrink: 0;
 }
 </style>
