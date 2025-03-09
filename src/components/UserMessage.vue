@@ -1,8 +1,8 @@
 <template>
     <div class="message-container">
-        <div class="user-message">{{ usermessage }}</div>
+        <div class="user-message">{{ usermessage }} <p class="dtime">{{ time }}</p></div>
         <img 
-            src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQanlasPgQjfGGU6anray6qKVVH-ZlTqmuTHw&s" 
+            v-lazy="'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQanlasPgQjfGGU6anray6qKVVH-ZlTqmuTHw&s'" 
             alt="User" 
             class="user-message-image"
         >
@@ -17,6 +17,12 @@ export default {
             type: String,
             required: true
         }
+    },setup(){
+        let now = new Date();
+        let hours = now.getHours();
+        let minutes = now.getMinutes();
+        let time = `${hours}:${minutes}`;
+        return {time};
     }
 };
 </script>
@@ -62,5 +68,9 @@ export default {
     border-radius: 50%;
     object-fit: cover;
     flex-shrink: 0; /* Prevents image from shrinking */
+}
+.dtime{
+    font-size: 10px;
+    color: darkgrey;
 }
 </style>

@@ -14,14 +14,14 @@
 </template>
 
 <script>
-import axios from "axios";
+import { GoogleGenerativeAI } from "@google/generative-ai";
 
 export default {
     name: "UserInput",
     data() {
         return {
             prompt: "", // Stores user input
-            apikey: "AIzaSyCc1jMTqqagg4NfwNIEylN-LlxDjSg1cmA",
+            apikey: "AIzaSyDNYaWdctjN18oY_ePuDRFSQqjPLT3HI1Q",
         };
     },
     methods: {
@@ -31,27 +31,17 @@ export default {
             this.$emit("send-message", {text:this.prompt,sender:'user'}); // Emit message to parent
             const userInput = this.prompt; // Store the input before clearing
             this.prompt = ""; // Clear input field after sending
-
-            try {
-                const response = await axios.post(
-                    "https://generativelanguage.googleapis.com/v1beta3/models/gemini-pro:generateContent",
-                    {
-                        contents: [{ parts: [{ text: userInput }] }],
-                    },
-                    {
-                        params: { key: this.apikey },
-                    }
-                );
-
-                const aiResponse =
-                    response.data.candidates?.[0]?.content?.parts?.[0]?.text ||
-                    "I couldn't process that.";
-
-                this.$emit("send-message",{text:aiResponse , sender : 'ai'});
-            } catch (error) {
-                console.error("Gemini API Error:", error);
-                this.$emit("send-message", {text:"I'm having trouble understanding that.",sender:'ai'});
-            }
+            this.$emit("send-message", {text:"Thinking...",sender:'ai'});
+            try{
+            const genAI = new GoogleGenerativeAI(this.apikey);
+            const model = genAI.getGenerativeModel({ model: "gemini-2.0-flash" });
+            const response = await model.generateContent(userInput);
+            console.log(response.response.text());
+            this.$emit("send-message", {text:response.response.text(),sender:'ai'});
+             }catch(err){
+                this.$emit("send-message", {text:"Something went wrong!",sender:'ai'}); 
+                console.error(err);
+             }
         },
     },
 };
@@ -77,6 +67,7 @@ export default {
     padding: 2.7em;
     width: 100vw;
     overflow: hidden;
+    z-index: 100;
 }
 .prompt {
     padding: 1.2em;

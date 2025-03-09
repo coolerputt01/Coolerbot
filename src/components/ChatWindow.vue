@@ -1,5 +1,5 @@
 <template>
-    <div class="chat-window">
+    <div class="chat-window" :class="{ darkmode: isDarkMode }">
         <div class="message-container">
             <template v-for="(msg, index) in messages" :key="index">
                 <UserMessage v-if="msg.sender === 'user'" :usermessage="msg.text" />
@@ -12,7 +12,7 @@
 <script>
 import UserMessage from './UserMessage.vue';
 import AiMessage from './AiMessage.vue';
-
+import { mapState } from "vuex";
 export default {
     name: "ChatWindow",
     props: {
@@ -21,7 +21,10 @@ export default {
     components: {
         UserMessage,
         AiMessage
-    }
+    },
+    computed: {
+    ...mapState(["isDarkMode"])
+  }
 };
 </script>
 
@@ -33,7 +36,7 @@ export default {
     overflow-y: auto;
     margin-top: 5em;
     margin-bottom: 5em;
-    
+    z-index: 100;
     /* Scrollbar Styling */
     scrollbar-width: thin; /* For Firefox */
     scrollbar-color: #00FF9C #1f2730; /* Scroll thumb and track */
@@ -49,7 +52,10 @@ export default {
     border-radius: 10px; /* Rounded edges */
     transition: background 0.3s;
 }
-
+.darkmode {
+  background-color: #fff !important;
+  color: #000 !important;
+}
 .chat-window::-webkit-scrollbar-thumb:hover {
     background-color: #00cc7a; /* Slightly darker green on hover */
 }
