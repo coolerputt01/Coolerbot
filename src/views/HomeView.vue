@@ -7,45 +7,51 @@
 </template>
 
 <script>
-import NavBar from '@/components/NavBar.vue'
-import UserInput from '@/components/UserInput.vue'
-import ChatWindow from '@/components/ChatWindow.vue'
+import { ref } from "vue";
+import { useHead } from "@vueuse/head";
+import NavBar from "@/components/NavBar.vue";
+import UserInput from "@/components/UserInput.vue";
+import ChatWindow from "@/components/ChatWindow.vue";
 
 export default {
-    name: 'HomeView',
-    metaInfo() {
-    return {
-      title: "CoolerBot.ai - AI Chatbot",
-      meta: [
-        { name: "description", content: "CoolerBot.ai is the smartest AI chatbot! made by coolerputt" },
-        { property: "og:title", content: "CoolerBot.ai - AI Chatbot" },
-        { property: "og:description", content: "Engage with AI like never before!" },
-        { property: "og:image", content: "https://i.ibb.co/DD1S8jN9/Cooler-bot-icon-small.png" },
-        { 
-  "name": "keywords", 
-  "content": "CoolerBot, CoolerBot.ai, AI chatbot, Smart chatbot, AI virtual assistant, AI-powered chatbot, Conversational AI, AI chatbot online, Intelligent chatbot, Best AI chatbot, CoolerBot AI chatbot, CoolerBot.ai smart assistant, AI chatbot for customer support, AI chatbot for websites, AI chatbot for e-commerce, AI chatbot for startups, AI chatbot for social media, AI chatbot with voice, Best AI chatbot for customer service, AI chatbot with machine learning, CoolerBot API, CoolerBot.ai integration, AI chatbot open-source, AI chatbot Vue.js, AI chatbot with Flask backend, AI chatbot with Python, AI chatbot using Gemini API, AI chatbot for PWA, AI chatbot Vuex store, AI chatbot with Vue Router, AI chatbot with voice commands, AI chatbot with emotions, CoolerBot.ai human-like responses, AI chatbot for fun conversations, AI chatbot for mental health, AI chatbot for learning, AI chatbot for entertainment, AI chatbot for dating, AI chatbot for finance, AI chatbot for productivity, CoolerBot.ai chatbot trends, Best AI chatbot apps, AI chatbot for social media automation, AI chatbot for content creation, AI chatbot vs human chat support, How AI chatbots work, AI chatbot benefits, AI chatbot success stories, Future of AI chatbots, CoolerBot.ai future AI chatbot" 
-},
-        { property: "og:url", content: "https://https://coolerbot.surge.sh/" }
-      ]
-    }
-  },components: {
+    name: "HomeView",
+    components: {
         NavBar,
         UserInput,
         ChatWindow
     },
-    data() {
-        return {
-            messages: [] // Stores all messages in order
-        };
-    },
-    methods: {
-        handleSendMessage(message) {
+    setup() {
+        useHead({
+            title: "CoolerBot.ai - AI Chatbot",
+            meta: [
+                // General SEO Meta Tags
+                { name: "description", content: "CoolerBot.ai is the smartest AI chatbot designed for seamless interactions." },
+                { name: "keywords", content: "CoolerBot, CoolerBot.ai, AI chatbot, Smart chatbot, AI assistant, Conversational AI, Intelligent chatbot, AI-powered chatbot, Chatbot technology, Machine learning chatbot, AI virtual assistant" },
+
+                // Open Graph (OG) Meta Tags for Social Media Sharing
+                { property: "og:type", content: "website" },
+                { property: "og:title", content: "CoolerBot.ai - AI Chatbot" },
+                { property: "og:description", content: "Engage with AI like never before! CoolerBot.ai brings human-like responses and intelligent conversations." },
+                { property: "og:image", content: "https://i.ibb.co/DD1S8jN9/Cooler-bot-icon-small.png" },
+                { property: "og:url", content: "https://coolerbot.surge.sh/" },
+
+                // Twitter Card Meta Tags for better Twitter link previews
+                { name: "twitter:card", content: "summary_large_image" },
+                { name: "twitter:title", content: "CoolerBot.ai - AI Chatbot" },
+                { name: "twitter:description", content: "CoolerBot.ai is the smartest AI chatbot, offering human-like conversations and intelligent responses." },
+                { name: "twitter:image", content: "https://i.ibb.co/DD1S8jN9/Cooler-bot-icon-small.png" }
+            ]
+        });
+
+        const messages = ref([]); // Vue 3 reactive state
+
+        const handleSendMessage = (message) => {
             if (!message || typeof message.text !== "string" || message.text.trim() === "") return;
+            messages.value.push({ text: message.text, sender: message.sender });
+            console.log("Messages:", messages.value);
+        };
 
-            this.messages.push({ text: message.text, sender: message.sender });
-
-            console.log("Messages:", this.messages);
-        }
+        return { messages, handleSendMessage };
     }
 };
 </script>
