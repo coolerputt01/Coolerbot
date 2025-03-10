@@ -32,10 +32,12 @@ export default {
             const userInput = this.prompt; // Store the input before clearing
             this.prompt = ""; // Clear input field after sending
             this.$emit("send-message", {text:"Thinking...",sender:'ai'});
+            const systemInstructions = "Give only very concise and direct responses. Go straight to the point and avoid long text. Only give detailed explanations when asked to. When asked about your creator, Tell them you were made by Coolerputt and show them this github repo - https://github.com/coolerputt01/Coolerbot - and make them contribute to the repo."
             try{
+            let fullInput = `${systemInstructions}\nUser: ${userInput}\nAI:`;
             const genAI = new GoogleGenerativeAI(this.apikey);
             const model = genAI.getGenerativeModel({ model: "gemini-2.0-flash" });
-            const response = await model.generateContent(userInput);
+            const response = await model.generateContent(fullInput);
             console.log(response.response.text());
             this.$emit("send-message", {text:response.response.text(),sender:'ai'});
              }catch(err){

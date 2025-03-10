@@ -1,12 +1,12 @@
 <template>
-    <div class="chat-window" :class="{ darkmode: isDarkMode }">
+    <section class="chat-window" :class="{ darkmode: isDarkMode }" ref="chatWindow">
         <div class="message-container">
             <template v-for="(msg, index) in messages" :key="index">
                 <UserMessage v-if="msg.sender === 'user'" :usermessage="msg.text" />
                 <AiMessage v-else-if="msg.sender === 'ai'" :aimessage="msg.text" />
             </template>
         </div>
-    </div>
+    </section>
 </template>
 
 <script>
@@ -24,7 +24,25 @@ export default {
     },
     computed: {
     ...mapState(["isDarkMode"])
-  }
+  },
+  methods: {
+        scrollToBottom() {
+            const chatWindow = this.$refs.chatWindow;
+            if (chatWindow) {
+                chatWindow.scrollTop = chatWindow.scrollHeight;
+            }
+        }
+    },
+    mounted() {
+        // Scroll to the bottom when the component is first rendered
+        this.$nextTick(() => {
+            this.scrollToBottom();
+        });
+    },
+    updated() {
+        // Scroll to the bottom whenever the messages change
+        this.scrollToBottom();
+    }
 };
 </script>
 
@@ -40,6 +58,7 @@ export default {
     /* Scrollbar Styling */
     scrollbar-width: thin; /* For Firefox */
     scrollbar-color: #00FF9C #1f2730; /* Scroll thumb and track */
+    overflow-x: hidden;
 }
 
 /* Webkit-based browsers (Chrome, Edge, Safari) */
