@@ -9,7 +9,7 @@
             <span ref="typedElement"></span>
             <div class="info">
                 <p class="dtime" :class="{ lightmode: !isDarkMode }">{{ time }}</p>
-                <i class="fa-solid fa-volume-high" :class="{ lightmode: !isDarkMode }" @click="speak(formattedmessage)" :disabled="isCooldownActive"></i>
+                <i class="fa-solid fa-volume-high" :class="{ lightmode: !isDarkMode }" @click="speak(aimessage)" :disabled="isCooldownActive"></i>
             </div>
         </div>
     </div>
